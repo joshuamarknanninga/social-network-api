@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # 18 NoSQL: Social Network API
 
 ## Your Task
@@ -280,3 +281,7 @@ You are required to submit BOTH of the following for review:
 
 ---
 © 2024 edX Boot Camps LLC. Confidential and Proprietary. All Rights Reserved.
+=======
+# social-network-api
+This is going to be the backend of a social network app.
+>>>>>>> 9f0f5e76470b41ef48a9b3377e7c7156281bdd76
