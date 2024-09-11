@@ -1,0 +1,20 @@
+{
+  "name": "social-network-api",
+  "version": "1.0.0",
+  "description": "This is the backend of a social network api.",
+  "main": "server.js",
+  "scripts": {
+    "test": "test",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/joshuamarknanninga/social-network-api.git"
+  },
+  "author": "J Mark Nanninga",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/joshuamarknanninga/social-network-api/issues"
+  },
+  "homepage": "https://github.com/joshuamarknanninga/social-network-api#readme"
+}
