@@ -1,0 +1,31 @@
+{{!-- Extending main layout --}}
+{{#extends 'main'}}
+
+{{#block 'body'}}
+    <article>
+        <h1>{{post.title}}</h1>
+        <p>{{post.content}}</p>
+        <p>Posted by {{post.user.username}} on {{post.createdAt}}</p>
+    </article>
+
+    {{#if logged_in}}
+        <form id="comment-form">
+            <textarea name="commentText" id="commentText" rows="4" placeholder="Leave a comment..."></textarea>
+            <button type="submit">Submit</button>
+        </form>
+    {{/if}}
+
+    <h2>Comments</h2>
+    {{#if post.comments.length}}
+        <ul>
+            {{#each post.comments}}
+            <li>
+                <p>{{this.commentText}} by {{this.user.username}} on {{this.createdAt}}</p>
+            </li>
+            {{/each}}
+        </ul>
+    {{else}}
+        <p>No comments yet!</p>
+    {{/if}}
+
+{{/block}}
