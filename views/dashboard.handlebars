@@ -1,0 +1,25 @@
+{{!-- Extending main layout --}}
+{{#extends 'main'}}
+
+{{#block 'body'}}
+    <h1>Your Dashboard</h1>
+    <a href="/new-post">Create New Post</a>
+
+    {{#if userPosts.length}}
+        <ul>
+            {{#each userPosts}}
+            <li>
+                <a href="/post/{{this.id}}">
+                    <h2>{{this.title}}</h2>
+                    <p>Posted on {{this.createdAt}}</p>
+                </a>
+                <button data-id="{{this.id}}" class="delete-post">Delete</button>
+                <a href="/edit-post/{{this.id}}">Edit</a>
+            </li>
+            {{/each}}
+        </ul>
+    {{else}}
+        <p>No posts yet!</p>
+    {{/if}}
+
+{{/block}}
