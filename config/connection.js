@@ -1,9 +1,15 @@
-// config/connection.js
-const mongoose = require('mongoose');
+const Sequelize = require('sequelize');
+require('dotenv').config();
 
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/socialNetworkDB', {
-  // useNewUrlParser: true,
-  // useUnifiedTopology: true,
-});
+const sequelize = new Sequelize(
+    process.env.DB_NAME,
+    process.env.DB_USER,
+    process.env.DB_PASSWORD,
+    {
+        host: 'localhost',
+        dialect: 'postgres',
+        port: 5432
+    }
+);
 
-module.exports = mongoose.connection;
+module.exports = sequelize;

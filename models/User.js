@@ -1,38 +1,37 @@
-const mongoose = require('mongoose');
-const { Schema, model } = mongoose;
+const { Model, DataTypes } = require('sequelize');
+const bcrypt = require('bcrypt');
+const sequelize = require('../config/connection');
 
-const userSchema = new Schema({
-  username: {
-    type: String,
-    unique: true,
-    required: true,
-    trim: true
-  },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-    match: [/.+@.+\..+/, 'Must be a valid email address']
-  },
-  thoughts: [{
-    type: Schema.Types.ObjectId,
-    ref: 'Thought'
-  }],
-  friends: [{
-    type: Schema.Types.ObjectId,
-    ref: 'User'
-  }]
-}, {
-  toJSON: {
-    virtuals: true,
-  },
-  id: false
-});
+class User extends Model {
+    checkPassword(loginPw) {
+        return bcrypt.compareSync(loginPw, this.password);
+    }
+}
 
-// Create a virtual property 'friendCount'
-userSchema.virtual('friendCount').get(function() {
-  return this.friends.length;
-});
+User.init(
+    {
+        username: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
+        password: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            validate: {
+                len: [6],
+            },
+        },
+    },
+    {
+        hooks: {
+            beforeCreate: async (newUserData) => {
+                newUserData.password = await bcrypt.hash(newUserData.password, 10);
+                return newUserData;
+            },
+        },
+        sequelize,
+        modelName: 'user',
+    }
+);
 
-const User = model('User', userSchema);
 module.exports = User;
