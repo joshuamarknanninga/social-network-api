@@ -1,36 +1,35 @@
+const path = require('path');
 const express = require('express');
-const mongoose = require('mongoose');
-const routes = require('./routes');
+const session = require('express-session');
+const exphbs = require('express-handlebars');
+const SequelizeStore = require('connect-session-sequelize')(session.Store);
+const sequelize = require('./config/connection');
+const routes = require('./controllers');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// Middleware
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-// Routes
-app.use('/api', routes);
-
-// Database connection using async/await
-const startServer = async () => {
-  try {
-    await mongoose.connect(
-      process.env.MONGODB_URI || 'mongodb://localhost:27017/socialnetwork',
-      {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-      }
-    );
-    console.log('🌍 Connected to MongoDB');
-
-    // Start the server only after connecting to the database
-    app.listen(PORT, () => {
-      console.log(`🌍 Server running on http://localhost:${PORT}`);
-    });
-  } catch (err) {
-    console.error('MongoDB connection error:', err);
-  }
+const sess = {
+    secret: 'Super secret secret',
+    cookie: {},
+    resave: false,
+    saveUninitialized: true,
+    store: new SequelizeStore({
+        db: sequelize,
+    }),
 };
 
-startServer();
+app.use(session(sess));
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, 'public')));
+
+app.engine('handlebars', exphbs());
+app.set('view engine', 'handlebars');
+
+app.use(routes);
+
+sequelize.sync({ force: false }).then(() => {
+    app.listen(PORT, () => console.log(`Now listening on PORT ${PORT}`));
+});
