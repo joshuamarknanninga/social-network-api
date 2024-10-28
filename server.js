@@ -1,53 +1,39 @@
-// server.js
-require('dotenv').config();
-
-const path = require('path');
 const express = require('express');
+const mongoose = require('mongoose');
 const session = require('express-session');
-const exphbs = require('express-handlebars');
-const { SequelizeStore } = require('connect-session-sequelize');
+const routes = require('./routes');
 
-const sequelize = require('./config/connection');
-const routes = require('./controllers');
-
-// const helpers = require('./utils/helpers');
-
+// Initialize the app and define a port
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-const sess = {
-  secret: process.env.SESSION_SECRET || 'Super secret secret',
-  cookie: {
-    maxAge: 600000,
-    secure: process.env.NODE_ENV === 'production',
-    httpOnly: true,
-    sameSite: 'strict',
-  },
-  resave: false,
-  saveUninitialized: false,
-  store: new SequelizeStore({
-    db: sequelize,
-  }),
-};
-
-app.use(session(sess));
-
-// // const hbs = exphbs.create({ helpers });
-// app.engine('handlebars', hbs.engine);
-// app.set('view engine', 'handlebars');
-
+// Middleware for parsing JSON and URL-encoded data
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, 'public')));
 
+// Session middleware (optional, can be removed if not needed)
+app.use(session({
+  secret: 'mysecretkey',  // Change this to an environment variable in production
+  resave: false,
+  saveUninitialized: true,
+}));
+
+// Serve a basic welcome message or redirect at the root
+app.get('/', (req, res) => {
+  res.send('Welcome to the Social Network API'); // Or redirect('/api/users')
+});
+
+// Set up routes
 app.use(routes);
 
-sequelize.sync({ force: false })
-  .then(() => {
-    app.listen(PORT, () => {
-      console.log(`Now listening on http://localhost:${PORT}`);
-    });
-  })
-  .catch(err => {
-    console.error('Unable to connect to the database:', err);
-  });
+// MongoDB connection (replace 'socialNetworkDB' with your DB name)
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/socialNetworkDB', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
+
+// Log Mongo queries being executed
+mongoose.set('debug', true);
+
+// Start the server
+app.listen(PORT, () => console.log(`🌍 Connected on localhost:${PORT}`));

@@ -1,36 +1,60 @@
-const { User } = require("../models")
+const { User } = require('../models');
 
 const getAllUsers = async (req, res) => {
-    const allUsers = await User.find();
-
-    res.json(allUsers)
-}
+    try {
+        const allUsers = await User.find();
+        res.json(allUsers);
+    } catch (err) {
+        res.status(500).json(err);
+    }
+};
 
 const getUserById = async (req, res) => {
-    const singleUser = await User.findById(req.params.userId);
-
-    res.json(singleUser)
-}
+    try {
+        const singleUser = await User.findById(req.params.userId);
+        if (!singleUser) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        res.json(singleUser);
+    } catch (err) {
+        res.status(500).json(err);
+    }
+};
 
 const createUser = async (req, res) => {
-    const newUser = await User.create(req.body);
-
-    res.json(newUser)
-}
+    try {
+        const newUser = await User.create(req.body);
+        res.json(newUser);
+    } catch (err) {
+        res.status(500).json(err);
+    }
+};
 
 const updateUserById = async (req, res) => {
-    const updatedUser = await User.findByIdAndUpdate(req.params.userId, {
-        username: req.body.username
-    }, { new: true});
-
-    res.json(updatedUser)
-}
+    try {
+        const updatedUser = await User.findByIdAndUpdate(req.params.userId, {
+            username: req.body.username
+        }, { new: true });
+        if (!updatedUser) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        res.json(updatedUser);
+    } catch (err) {
+        res.status(500).json(err);
+    }
+};
 
 const deleteUserById = async (req, res) => {
-    const deletedUser = await User.findByIdAndDelete(req.params.userId);
-
-    res.json(deletedUser)
-}
+    try {
+        const deletedUser = await User.findByIdAndDelete(req.params.userId);
+        if (!deletedUser) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        res.json(deletedUser);
+    } catch (err) {
+        res.status(500).json(err);
+    }
+};
 
 module.exports = {
     getAllUsers,
@@ -38,4 +62,4 @@ module.exports = {
     createUser,
     updateUserById,
     deleteUserById
-}
+};

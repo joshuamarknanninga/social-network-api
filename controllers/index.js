@@ -1,5 +1,7 @@
-const Comment = require('./Reaction');
-const Post = require('./Thought');
-const User = require('./User')
+const userControllers = require('./userControllers');
+const thoughtControllers = require('./thoughtController');
 
-module.exports = {Comment, Post, User}
+module.exports = {
+    userControllers,
+    thoughtControllers,
+};
