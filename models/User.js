@@ -1,42 +1,38 @@
-// models/User.js
-const { Model, DataTypes } = require('sequelize');
-const sequelize = require('../config/connection');
+const { Schema, model } = require('mongoose');
 
-class User extends Model {}
-
-User.init(
+// Schema to create Student model
+const userSchema = new Schema(
   {
-    id: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true,
-      allowNull: false,
-    },
     username: {
-      type: DataTypes.STRING,
-      allowNull: false,
+      type: String,
       unique: true,
+      required: true,
+      trim: true
     },
     email: {
-      type: DataTypes.STRING,
-      allowNull: false,
+      type: String,
+      required: true,
       unique: true,
-      validate: {
-        isEmail: true,
-      },
+      // validate email using match
+      // match: /regex/
     },
-    password: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
+    thoughts: [{
+      type: Schema.Types.ObjectId,
+        ref: "thought"
+    }],
+    friends: [{
+      type: Schema.Types.ObjectId,
+      ref: 'user'
+    }]
   },
   {
-    sequelize,
-    timestamps: true,
-    freezeTableName: true,
-    underscored: true,
-    modelName: 'user',
+    toJSON: {
+      getters: true,
+    },
   }
 );
 
+const User = model('user', userSchema);
+
 module.exports = User;
+
